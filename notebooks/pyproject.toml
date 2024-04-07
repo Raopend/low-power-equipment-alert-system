@@ -11,6 +11,10 @@ jupyter = "^1.0.0"
 pandas = "^2.2.1"
 missingno = "^0.5.2"
 plotly = "^5.20.0"
+numpy = "^1.26.4"
+statsmodels = "^0.14.1"
+pmdarima = "^2.0.4"
+seaborn = "^0.13.2"
 
 
 [build-system]

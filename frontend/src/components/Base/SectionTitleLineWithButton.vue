@@ -1,5 +1,4 @@
 <script setup>
-import {mdiCog} from '@mdi/js'
 import {useSlots, computed} from 'vue'
 import IconRounded from "@/components/Base/IconRounded.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
@@ -31,6 +30,5 @@ const hasSlot = computed(() => useSlots().default)
             </h1>
         </div>
         <slot v-if="hasSlot"/>
-        <base-button v-else :icon="mdiCog" color="whiteDark"/>
     </section>
 </template>

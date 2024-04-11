@@ -1,13 +1,16 @@
 from fastapi import FastAPI
 
+from database import Database
+from models import EquipmentState
+
 app = FastAPI()
+
+database = Database()
+engine = database.get_db_connection()
 
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+async def read_all_users():
+    session = database.get_db_session(engine)
+    data = session.query(EquipmentState).limit(100).all()
+    return data

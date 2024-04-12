@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Double
+from sqlalchemy import Column, Integer, Double, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -16,3 +16,4 @@ class EquipmentState(Base):
     Ub = Column(Double)
     Uc = Column(Double)
     elec_degree = Column(Double)
+    collection_time = Column(DateTime)

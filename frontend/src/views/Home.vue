@@ -28,21 +28,17 @@ onMounted(() => {
 <template>
     <default-layout>
         <section-main>
-            <section-title-line-with-button :icon="mdiChartTimelineVariant" title="Trends overview">
+            <section-title-line-with-button :icon="mdiChartTimelineVariant" title="设备状态">
             </section-title-line-with-button>
 
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
                 <card-box-widget
-                    trend="12%"
-                    trend-type="up"
                     color="text-emerald-500"
                     :icon="mdiAccountMultiple"
                     :number="512"
                     label="Clients"
                 />
                 <card-box-widget
-                    trend="12%"
-                    trend-type="down"
                     color="text-blue-500"
                     :icon="mdiCartOutline"
                     :number="7770"
@@ -50,8 +46,48 @@ onMounted(() => {
                     label="Sales"
                 />
                 <card-box-widget
-                    trend="Overflow"
-                    trend-type="alert"
+                    color="text-red-500"
+                    :icon="mdiChartTimelineVariant"
+                    :number="256"
+                    suffix="%"
+                    label="Performance"
+                />
+                <card-box-widget
+                    color="text-red-500"
+                    :icon="mdiChartTimelineVariant"
+                    :number="256"
+                    suffix="%"
+                    label="Performance"
+                />
+                <card-box-widget
+                    color="text-red-500"
+                    :icon="mdiChartTimelineVariant"
+                    :number="256"
+                    suffix="%"
+                    label="Performance"
+                />
+                <card-box-widget
+                    color="text-red-500"
+                    :icon="mdiChartTimelineVariant"
+                    :number="256"
+                    suffix="%"
+                    label="Performance"
+                />
+                <card-box-widget
+                    color="text-red-500"
+                    :icon="mdiChartTimelineVariant"
+                    :number="256"
+                    suffix="%"
+                    label="Performance"
+                />
+                <card-box-widget
+                    color="text-red-500"
+                    :icon="mdiChartTimelineVariant"
+                    :number="256"
+                    suffix="%"
+                    label="Performance"
+                />
+                <card-box-widget
                     color="text-red-500"
                     :icon="mdiChartTimelineVariant"
                     :number="256"
@@ -60,7 +96,7 @@ onMounted(() => {
                 />
             </div>
 
-            <section-title-line-with-button :icon="mdiChartPie" title="Trends overview">
+            <section-title-line-with-button :icon="mdiChartPie" title="电流趋势">
                 <base-button :icon="mdiReload" color="whiteDark" @click="fillChartData"/>
             </section-title-line-with-button>
 

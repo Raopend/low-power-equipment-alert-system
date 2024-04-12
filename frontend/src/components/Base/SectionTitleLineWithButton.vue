@@ -2,7 +2,6 @@
 import {useSlots, computed} from 'vue'
 import IconRounded from "@/components/Base/IconRounded.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
 
 
 defineProps({

@@ -45,10 +45,6 @@ defineProps({
 
 <template>
     <card-box>
-        <base-level v-if="trend" class="mb-3" mobile>
-            <pill-tag-trend :trend="trend" :trend-type="trendType" small/>
-            <base-button :icon="mdiCog" icon-w="w-4" icon-h="h-4" color="lightDark" small/>
-        </base-level>
         <base-level mobile>
             <div>
                 <h3 class="text-lg leading-tight text-gray-500 dark:text-slate-400">

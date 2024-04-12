@@ -10,6 +10,7 @@ python = "^3.10"
 mysql-connector-python = "^8.3.0"
 pymysql = "^1.1.0"
 sqlalchemy = "^2.0.29"
+python-dateutil = "^2.9.0.post0"
 
 
 [build-system]

@@ -3,26 +3,56 @@
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import SectionMain from "@/components/Base/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Base/SectionTitleLineWithButton.vue";
-import {
-    mdiAccountMultiple, mdiCartOutline, mdiChartPie,
-    mdiChartTimelineVariant, mdiReload
-} from "@mdi/js";
+import {mdiCartOutline, mdiChartPie, mdiChartTimelineVariant} from "@mdi/js";
 import CardBoxWidget from "@/components/Card/CardBoxWidget.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
-import {onMounted, ref} from "vue";
-import * as chartConfig from '@/components/Charts/chart.config.js'
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import CardBox from "@/components/Card/CardBox.vue";
 import LineChart from "@/components/Charts/LineChart.vue";
 
-const chartData = ref(null)
-
-const fillChartData = () => {
-    chartData.value = chartConfig.sampleChartData()
-}
+const chartData = ref(null);
+const stateData = ref({
+    Ia: null,
+    Ib: null,
+    Ic: null,
+    Ua: null,
+    Ub: null,
+    Uc: null,
+    P: null,
+    COS: null,
+    elec_degree: null,
+    collection_time: null
+});
+let ws = null;
+// const fillChartData = () => {
+//     chartData.value = chartConfig.sampleChartData()
+// }
 
 onMounted(() => {
-    fillChartData()
-})
+    ws = new WebSocket('ws://localhost:8000/ws/equipment_state');
+
+    ws.onmessage = (event) => {
+        stateData.value = JSON.parse(event.data).data;
+        console.log(stateData.value);
+    }
+
+    ws.onclose = () => console.log("WebSocket connection closed");
+    ws.onerror = (error) => console.error("WebSocket error:", error);
+
+    setInterval(() => {
+        if (ws.readyState === ws.OPEN)
+            ws.send("ping");
+    }, 1000);
+
+    // 断线重连
+    ws.onclose = () => {
+        console.log('WebSocket connection closed. Reconnecting...');
+        ws = new WebSocket('ws://localhost:8000/ws/equipment_state');
+    };
+});
+
+onBeforeUnmount(() => {
+    if (ws) ws.close();
+});
 </script>
 
 <template>
@@ -33,71 +63,70 @@ onMounted(() => {
 
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
                 <card-box-widget
-                    color="text-emerald-500"
-                    :icon="mdiAccountMultiple"
-                    :number="512"
-                    label="Clients"
+                    color="text-blue-500"
+                    :icon="mdiCartOutline"
+                    :number="stateData.Ia"
+                    :suffix="`A`"
+                    label="Ia"
                 />
                 <card-box-widget
                     color="text-blue-500"
                     :icon="mdiCartOutline"
-                    :number="7770"
-                    prefix="$"
-                    label="Sales"
+                    :number="stateData.Ib"
+                    :suffix="`A`"
+                    label="Ib"
                 />
                 <card-box-widget
                     color="text-red-500"
                     :icon="mdiChartTimelineVariant"
-                    :number="256"
-                    suffix="%"
-                    label="Performance"
+                    :number="stateData.Ic"
+                    :suffix="`A`"
+                    label="Ic"
                 />
                 <card-box-widget
                     color="text-red-500"
                     :icon="mdiChartTimelineVariant"
-                    :number="256"
-                    suffix="%"
-                    label="Performance"
+                    :number="stateData.Ua"
+                    suffix="U"
+                    label="Ua"
                 />
                 <card-box-widget
                     color="text-red-500"
                     :icon="mdiChartTimelineVariant"
-                    :number="256"
-                    suffix="%"
-                    label="Performance"
+                    :number="stateData.Ub"
+                    suffix="U"
+                    label="Ub"
                 />
                 <card-box-widget
                     color="text-red-500"
                     :icon="mdiChartTimelineVariant"
-                    :number="256"
-                    suffix="%"
-                    label="Performance"
+                    :number="stateData.Uc"
+                    suffix="U"
+                    label="Uc"
                 />
                 <card-box-widget
                     color="text-red-500"
                     :icon="mdiChartTimelineVariant"
-                    :number="256"
-                    suffix="%"
-                    label="Performance"
+                    :number="stateData.P"
+                    label="P"
                 />
                 <card-box-widget
                     color="text-red-500"
                     :icon="mdiChartTimelineVariant"
-                    :number="256"
-                    suffix="%"
-                    label="Performance"
+                    :number="stateData.COS"
+                    label="COS"
                 />
                 <card-box-widget
                     color="text-red-500"
                     :icon="mdiChartTimelineVariant"
-                    :number="256"
-                    suffix="%"
-                    label="Performance"
+                    :number="stateData.elec_degree"
+                    suffix="d"
+                    label="elec_degree"
                 />
             </div>
 
             <section-title-line-with-button :icon="mdiChartPie" title="电流趋势">
-                <base-button :icon="mdiReload" color="whiteDark" @click="fillChartData"/>
+                <!--                <base-button :icon="mdiReload" color="whiteDark" @click="fillChartData"/>-->
             </section-title-line-with-button>
 
             <card-box class="mb-6">
@@ -105,6 +134,7 @@ onMounted(() => {
                     <line-chart :data="chartData" class="h-96"/>
                 </div>
             </card-box>
+            <p> {{ stateData.P }}</p>
         </section-main>
     </default-layout>
 </template>

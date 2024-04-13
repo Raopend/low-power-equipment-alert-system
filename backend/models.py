@@ -5,10 +5,9 @@ Base = declarative_base()
 
 
 class EquipmentState(Base):
-    __tablename__ = "dnaq_history_data_2022"
+    __tablename__ = "dnaq_15s_interval"
 
     id = Column(Integer, primary_key=True)
-    company_id = Column(Integer)
     Ia = Column(Double)
     Ib = Column(Double)
     Ic = Column(Double)
@@ -16,4 +15,6 @@ class EquipmentState(Base):
     Ub = Column(Double)
     Uc = Column(Double)
     elec_degree = Column(Double)
+    P = Column(Double)
+    COS = Column(Double)
     collection_time = Column(DateTime)

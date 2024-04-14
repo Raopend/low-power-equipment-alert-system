@@ -1,9 +1,14 @@
 /* eslint-env node */
 
 const plugin = require("tailwindcss/plugin");
-
+const colors = require("tailwindcss/colors");
 module.exports = {
-    content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+    content: [
+        "./index.html",
+        "./src/**/*.{vue,js,ts,jsx,tsx}",
+        "./node_modules/flowbite/**/*.js",
+        "./node_modules/vue-tailwind-datepicker/**/*.js"
+    ],
     darkMode: "class", // or 'media' or 'class'
     theme: {
         asideScrollbars: {
@@ -39,6 +44,10 @@ module.exports = {
                 "fade-out": "fade-out 250ms ease-in-out",
                 "fade-in": "fade-in 250ms ease-in-out",
             },
+            colors: {
+                "vtd-primary": colors.sky, // Light mode Datepicker color
+                "vtd-secondary": colors.gray, // Dark mode Datepicker color
+            },
         },
     },
     plugins: [
@@ -73,5 +82,6 @@ module.exports = {
                 {values: theme("asideScrollbars")}
             );
         }),
+        require('flowbite/plugin')
     ],
 };

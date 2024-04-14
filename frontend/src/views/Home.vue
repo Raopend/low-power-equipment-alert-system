@@ -5,11 +5,30 @@ import SectionMain from "@/components/Base/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Base/SectionTitleLineWithButton.vue";
 import {mdiCartOutline, mdiChartPie, mdiChartTimelineVariant} from "@mdi/js";
 import CardBoxWidget from "@/components/Card/CardBoxWidget.vue";
-import {onBeforeUnmount, onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, reactive, ref} from "vue";
 import CardBox from "@/components/Card/CardBox.vue";
 import LineChart from "@/components/Charts/LineChart.vue";
+import VueTailwindDatepicker from "vue-tailwind-datepicker";
+import * as chartConfig from '@/components/Charts/chart.config.js'
+import FormField from "@/components/Forms/FormField.vue";
+import FormControllcon from "@/components/Forms/FormControllcon.vue";
+import FormControl from "@/components/Forms/FormControl.vue";
 
-const chartData = ref(null);
+const selectOptions = [
+    {id: 1, label: '按天'},
+    {id: 2, label: '按小时'},
+    {id: 3, label: '按分钟'}
+];
+
+const form = reactive({
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    phone: '',
+    department: selectOptions[0],
+    subject: '',
+    question: ''
+});
+
 const stateData = ref({
     Ia: null,
     Ib: null,
@@ -22,10 +41,18 @@ const stateData = ref({
     elec_degree: null,
     collection_time: null
 });
+const dateValue = ref([]);
+const formatter = ref({
+    date: 'DD MMM YYYY',
+    month: 'MMM',
+})
 let ws = null;
-// const fillChartData = () => {
-//     chartData.value = chartConfig.sampleChartData()
-// }
+
+const chartData = ref(null)
+
+const fillChartData = () => {
+    chartData.value = chartConfig.sampleChartData()
+}
 
 onMounted(() => {
     ws = new WebSocket('ws://localhost:8000/ws/equipment_state');
@@ -48,6 +75,8 @@ onMounted(() => {
         console.log('WebSocket connection closed. Reconnecting...');
         ws = new WebSocket('ws://localhost:8000/ws/equipment_state');
     };
+
+    fillChartData()
 });
 
 onBeforeUnmount(() => {
@@ -59,6 +88,7 @@ onBeforeUnmount(() => {
     <default-layout>
         <section-main>
             <section-title-line-with-button :icon="mdiChartTimelineVariant" title="设备状态">
+                <p>采集时间 {{ stateData.collection_time }}</p>
             </section-title-line-with-button>
 
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
@@ -126,15 +156,28 @@ onBeforeUnmount(() => {
             </div>
 
             <section-title-line-with-button :icon="mdiChartPie" title="电流趋势">
-                <!--                <base-button :icon="mdiReload" color="whiteDark" @click="fillChartData"/>-->
             </section-title-line-with-button>
-
-            <card-box class="mb-6">
+            <CardBox class="mb-6 mt-4">
+                <form-field label="">
+                    <vue-tailwind-datepicker v-model="dateValue" :formatter="formatter"/>
+                    <form-control v-model="form.department" :options="selectOptions"/>
+                </form-field>
                 <div v-if="chartData">
                     <line-chart :data="chartData" class="h-96"/>
                 </div>
-            </card-box>
-            <p> {{ stateData.P }}</p>
+            </CardBox>
+
+            <section-title-line-with-button :icon="mdiChartPie" title="电压趋势">
+            </section-title-line-with-button>
+            <CardBox class="mb-6 mt-4">
+                <form-field label="">
+                    <vue-tailwind-datepicker v-model="dateValue" :formatter="formatter"/>
+                    <form-control v-model="form.department" :options="selectOptions"/>
+                </form-field>
+                <div v-if="chartData">
+                    <line-chart :data="chartData" class="h-96"/>
+                </div>
+            </CardBox>
         </section-main>
     </default-layout>
 </template>

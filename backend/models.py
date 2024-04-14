@@ -1,7 +1,16 @@
 from sqlalchemy import Column, Integer, Double, DateTime
 from sqlalchemy.ext.declarative import declarative_base
+from pydantic import BaseModel
+import enum
 
 Base = declarative_base()
+
+
+class TimeInterval(enum.Enum):
+    minute = "1 minute"
+    half_hour = "30 minutes"
+    hour = "1 hour"
+    day = "1 day"
 
 
 class EquipmentState(Base):

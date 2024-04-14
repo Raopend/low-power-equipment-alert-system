@@ -11,23 +11,7 @@ import LineChart from "@/components/Charts/LineChart.vue";
 import VueTailwindDatepicker from "vue-tailwind-datepicker";
 import * as chartConfig from '@/components/Charts/chart.config.js'
 import FormField from "@/components/Forms/FormField.vue";
-import FormControllcon from "@/components/Forms/FormControllcon.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
-
-const selectOptions = [
-    {id: 1, label: '按天'},
-    {id: 2, label: '按小时'},
-    {id: 3, label: '按分钟'}
-];
-
-const form = reactive({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '',
-    department: selectOptions[0],
-    subject: '',
-    question: ''
-});
 
 const stateData = ref({
     Ia: null,
@@ -45,10 +29,22 @@ const dateValue = ref([]);
 const formatter = ref({
     date: 'DD MMM YYYY',
     month: 'MMM',
-})
+});
+
+const selectOptions = [
+    {id: 1, label: '按天'},
+    {id: 2, label: '按小时'},
+    {id: 3, label: '按分钟'}
+];
+
+const form = reactive({
+    timeRange: dateValue,
+    department: selectOptions[0],
+});
+
 let ws = null;
 
-const chartData = ref(null)
+const chartData = ref(null);
 
 const fillChartData = () => {
     chartData.value = chartConfig.sampleChartData()

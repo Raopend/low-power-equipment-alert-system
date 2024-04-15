@@ -18,6 +18,7 @@ const randomChartData = (n) => {
 
 const datasetObject = (color, points) => {
     return {
+        label: 'test',
         fill: false,
         borderColor: chartColors.default[color],
         borderWidth: 2,
@@ -36,11 +37,11 @@ const datasetObject = (color, points) => {
     }
 }
 
-export const sampleChartData = (points = 9) => {
+export const sampleChartData = (points = 12) => {
     const labels = []
 
-    for (let i = 1; i <= points; i++) {
-        labels.push(`0${i}`)
+    for (let i = 0; i < points; ++i) {
+        labels.push(i.toString());
     }
 
     return {

@@ -3,7 +3,7 @@
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import SectionMain from "@/components/Base/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Base/SectionTitleLineWithButton.vue";
-import {mdiCartOutline, mdiChartPie, mdiChartTimelineVariant} from "@mdi/js";
+import {mdiCartOutline, mdiChartPie, mdiChartTimelineVariant, mdiReload} from "@mdi/js";
 import CardBoxWidget from "@/components/Card/CardBoxWidget.vue";
 import {onBeforeUnmount, onMounted, reactive, ref} from "vue";
 import CardBox from "@/components/Card/CardBox.vue";
@@ -12,6 +12,7 @@ import VueTailwindDatepicker from "vue-tailwind-datepicker";
 import * as chartConfig from '@/components/Charts/chart.config.js'
 import FormField from "@/components/Forms/FormField.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
 
 const stateData = ref({
     Ia: null,
@@ -71,8 +72,6 @@ onMounted(() => {
         console.log('WebSocket connection closed. Reconnecting...');
         ws = new WebSocket('ws://localhost:8000/ws/equipment_state');
     };
-
-    fillChartData()
 });
 
 onBeforeUnmount(() => {
@@ -152,6 +151,7 @@ onBeforeUnmount(() => {
             </div>
 
             <section-title-line-with-button :icon="mdiChartPie" title="电流趋势">
+                <base-button :icon="mdiReload" color="whiteDark" @click="fillChartData" />
             </section-title-line-with-button>
             <CardBox class="mb-6 mt-4">
                 <form-field label="">
@@ -164,6 +164,7 @@ onBeforeUnmount(() => {
             </CardBox>
 
             <section-title-line-with-button :icon="mdiChartPie" title="电压趋势">
+                <base-button :icon="mdiReload" color="whiteDark" @click="fillChartData" />
             </section-title-line-with-button>
             <CardBox class="mb-6 mt-4">
                 <form-field label="">

@@ -123,10 +123,11 @@ onMounted(() => {
     }, 1000);
 
     // 断线重连
-    ws.onclose = () => {
-        console.log('WebSocket connection closed. Reconnecting...');
-        ws = new WebSocket('ws://localhost:8000/ws/equipment_state');
-    };
+    setInterval(() => {
+        if (ws.readyState === ws.CLOSED) {
+            ws = new WebSocket('ws://localhost:8000/ws/equipment_state');
+        }
+    }, 5000);
 
     fillIChartData();
     fillUChartData();

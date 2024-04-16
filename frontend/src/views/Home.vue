@@ -1,5 +1,4 @@
 <script setup>
-
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import SectionMain from "@/components/Base/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Base/SectionTitleLineWithButton.vue";
@@ -9,10 +8,12 @@ import {onBeforeUnmount, onMounted, reactive, ref} from "vue";
 import CardBox from "@/components/Card/CardBox.vue";
 import LineChart from "@/components/Charts/LineChart.vue";
 import VueTailwindDatepicker from "vue-tailwind-datepicker";
-import * as chartConfig from '@/components/Charts/chart.config.js'
 import FormField from "@/components/Forms/FormField.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
+import moment from "moment";
+import axiosInstance from "@/api/axiosInstance.js";
+import {datasetObject} from "@/components/Charts/chart.config.js";
 
 const stateData = ref({
     Ia: null,
@@ -26,29 +27,83 @@ const stateData = ref({
     elec_degree: null,
     collection_time: null
 });
-const dateValue = ref([]);
+const dateIValue = ref({
+    startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
+    endDate: moment().format('YYYY-MM-DD'),
+});
+const dateUValue = ref({
+    startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
+    endDate: moment().format('YYYY-MM-DD'),
+});
 const formatter = ref({
-    date: 'DD MMM YYYY',
+    date: 'YYYY-MM-DD',
     month: 'MMM',
 });
 
 const selectOptions = [
-    {id: 1, label: '按天'},
-    {id: 2, label: '按小时'},
-    {id: 3, label: '按分钟'}
+    {id: 1, label: '1 day'},
+    {id: 2, label: '1 hour'},
+    {id: 3, label: '30 minutes'}
 ];
 
-const form = reactive({
-    timeRange: dateValue,
-    department: selectOptions[0],
+const formI = reactive({
+    timeRange: dateIValue,
+    interval: selectOptions[0],
+});
+
+const formU = reactive({
+    timeRange: dateUValue,
+    interval: selectOptions[0],
 });
 
 let ws = null;
 
-const chartData = ref(null);
+const chartIData = ref({});
+const chartUData = ref({});
 
-const fillChartData = () => {
-    chartData.value = chartConfig.sampleChartData()
+
+const fillIChartData = async () => {
+    const params = {
+        start_time: dateIValue.value.startDate,
+        end_time: dateIValue.value.endDate,
+        interval: formI.interval.label
+    };
+
+    try {
+        const response = await axiosInstance.post('http://localhost:8000/query/equipment_I_trend', params);
+        chartIData.value = {
+            labels: response.data.map(item => item.collection_time),
+            datasets: [
+                datasetObject('primary', 'Ia', response.data.map(item => item.Ia)),
+                datasetObject('info', 'Ib', response.data.map(item => item.Ib)),
+                datasetObject('danger', 'Ic', response.data.map(item => item.Ic))
+            ]
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const fillUChartData = async () => {
+    const params = {
+        start_time: dateUValue.value.startDate,
+        end_time: dateUValue.value.endDate,
+        interval: formU.interval.label
+    };
+
+    try {
+        const response = await axiosInstance.post('http://localhost:8000/query/equipment_U_trend', params);
+        chartUData.value = {
+            labels: response.data.map(item => item.collection_time),
+            datasets: [
+                datasetObject('primary', 'Ua', response.data.map(item => item.Ua)),
+                datasetObject('info', 'Ub', response.data.map(item => item.Ub)),
+                datasetObject('danger', 'Uc', response.data.map(item => item.Uc))
+            ]
+        }
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 onMounted(() => {
@@ -72,6 +127,9 @@ onMounted(() => {
         console.log('WebSocket connection closed. Reconnecting...');
         ws = new WebSocket('ws://localhost:8000/ws/equipment_state');
     };
+
+    fillIChartData();
+    fillUChartData();
 });
 
 onBeforeUnmount(() => {
@@ -151,28 +209,28 @@ onBeforeUnmount(() => {
             </div>
 
             <section-title-line-with-button :icon="mdiChartPie" title="电流趋势">
-                <base-button :icon="mdiReload" color="whiteDark" @click="fillChartData" />
+                <base-button :icon="mdiReload" color="whiteDark" @click="fillIChartData"/>
             </section-title-line-with-button>
             <CardBox class="mb-6 mt-4">
                 <form-field label="">
-                    <vue-tailwind-datepicker v-model="dateValue" :formatter="formatter"/>
-                    <form-control v-model="form.department" :options="selectOptions"/>
+                    <vue-tailwind-datepicker v-model="dateIValue" :formatter="formatter"/>
+                    <form-control v-model="formI.interval" :options="selectOptions"/>
                 </form-field>
-                <div v-if="chartData">
-                    <line-chart :data="chartData" class="h-96"/>
+                <div v-if="chartIData">
+                    <line-chart :data="chartIData" class="h-96"/>
                 </div>
             </CardBox>
 
             <section-title-line-with-button :icon="mdiChartPie" title="电压趋势">
-                <base-button :icon="mdiReload" color="whiteDark" @click="fillChartData" />
+                <base-button :icon="mdiReload" color="whiteDark" @click="fillUChartData"/>
             </section-title-line-with-button>
             <CardBox class="mb-6 mt-4">
                 <form-field label="">
-                    <vue-tailwind-datepicker v-model="dateValue" :formatter="formatter"/>
-                    <form-control v-model="form.department" :options="selectOptions"/>
+                    <vue-tailwind-datepicker v-model="dateUValue" :formatter="formatter"/>
+                    <form-control v-model="formU.interval" :options="selectOptions"/>
                 </form-field>
-                <div v-if="chartData">
-                    <line-chart :data="chartData" class="h-96"/>
+                <div v-if="chartUData">
+                    <line-chart :data="chartUData" class="h-96"/>
                 </div>
             </CardBox>
         </section-main>

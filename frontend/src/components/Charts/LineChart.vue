@@ -1,5 +1,5 @@
 <script setup>
-import {ref, watch, computed, onMounted} from 'vue'
+import {ref, watch, computed, onMounted} from 'vue';
 import {
     Chart,
     LineElement,
@@ -9,20 +9,20 @@ import {
     CategoryScale,
     Tooltip,
     Legend
-} from 'chart.js'
+} from 'chart.js';
 
 const props = defineProps({
     data: {
         type: Object,
         required: true
     }
-})
+});
 
-const root = ref(null)
+const root = ref(null);
 
-let chart
+let chart;
 
-Chart.register(LineElement, PointElement, LineController, LinearScale, CategoryScale, Tooltip, Legend)
+Chart.register(LineElement, PointElement, LineController, LinearScale, CategoryScale, Tooltip, Legend);
 
 onMounted(() => {
     chart = new Chart(root.value, {
@@ -45,16 +45,16 @@ onMounted(() => {
             }
         }
     })
-})
+});
 
-const chartData = computed(() => props.data)
+const chartData = computed(() => props.data);
 
 watch(chartData, (data) => {
     if (chart) {
         chart.data = data
         chart.update()
     }
-})
+});
 </script>
 
 <template>

@@ -76,7 +76,7 @@ const inputElClass = computed(() => {
 
 const computedType = computed(() => (props.options ? 'select' : props.type))
 
-const controlIconH = computed(() => (props.type === 'textarea' ? 'h-full' : 'h-10.4'))
+const controlIconH = computed(() => (props.type === 'textarea' ? 'h-full' : 'h-full'))
 
 const selectEl = ref(null)
 

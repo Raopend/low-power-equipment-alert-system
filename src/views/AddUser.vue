@@ -55,7 +55,7 @@ const formStatusSubmit = () => {
     <section-main>
       <section-title-line-with-button
         :icon="mdiBallotOutline"
-        title="Forms example"
+        title="设备预警"
         main
       >
       </section-title-line-with-button>

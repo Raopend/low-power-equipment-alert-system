@@ -9,16 +9,24 @@ const router = createRouter({
       },
       path: "/",
       name: "Home",
-      component: () => import("@/views/Home.vue"),
+      component: () => import("@/views/test.vue"),
     },
     {
       meta: {
-        title: "预警",
+        title: "添加用户",
       },
-      path: "/alert",
-      name: "Alert",
-      component: () => import("@/views/Alert.vue"),
+      path: "/AddUser",
+      name: "AddUser",
+      component: () => import("@/views/AddUser.vue"),
     },
+    {
+      meta: {
+        title: "用户管理",
+      },
+      path: "/UserManagement",
+      name: "UserManagement",
+      component: () => import("@/views/UserManagement.vue"),
+      }
   ],
   scrollBehavior(to, from, savedPosition) {
     return savedPosition || { top: 0 };

@@ -1,18 +1,18 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { useMainStore } from '@/stores/main'
-import { mdiCheckDecagram } from '@mdi/js'
+import { computed, ref } from "vue";
+import { useMainStore } from "@/stores/main";
+import { mdiCheckDecagram } from "@mdi/js";
 import PillTag from "@/components/Pill/PillTag.vue";
 import CardBox from "@/components/Card/CardBox.vue";
 import BaseLevel from "@/components/Base/Baselevel.vue";
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
 import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
 
-const mainStore = useMainStore()
+const mainStore = useMainStore();
 
-const userName = computed(() => mainStore.userName)
+const userName = computed(() => mainStore.userName);
 
-const userSwitchVal = ref(false)
+const userSwitchVal = ref(false);
 </script>
 
 <template>

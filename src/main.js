@@ -3,7 +3,7 @@ import App from "./App.vue";
 import "./css/main.css";
 import router from "./routers";
 import { createPinia } from "pinia";
-import {useMainStore} from "@/stores/main.js";
+import { useMainStore } from "@/stores/main.js";
 
 const pinia = createPinia();
 const app = createApp(App);
@@ -14,8 +14,8 @@ app.mount("#app");
 
 const mainStore = useMainStore(pinia);
 // Fetch sample data
-mainStore.fetchSampleClients()
-mainStore.fetchSampleHistory()
+mainStore.fetchSampleClients();
+mainStore.fetchSampleHistory();
 
 // Default title tag
 const defaultDocumentTitle = "Admin One Vue 3 Tailwind";

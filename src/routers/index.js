@@ -26,7 +26,7 @@ const router = createRouter({
       path: "/UserManagement",
       name: "UserManagement",
       component: () => import("@/views/UserManagement.vue"),
-      }
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     return savedPosition || { top: 0 };

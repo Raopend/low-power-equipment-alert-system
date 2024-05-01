@@ -14,8 +14,7 @@ export default [
   {
     icon: mdiCarBrakeAlert,
     to: "/AddUser",
-    icon: mdiPencilPlus,
-    label: "添加用户",
+    label: "添加预警",
   },
   {
     to: "/UserManagement",

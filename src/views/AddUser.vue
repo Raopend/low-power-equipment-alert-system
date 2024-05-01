@@ -10,22 +10,28 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import FormCheckRadioGroup from "@/components/Forms/FormCheckRadioGroup.vue";
+import { addUser } from "@/api/user.js";
 
 const form = reactive({
-  name: "",
+  username: "",
   email: "",
   phone: "",
+  alert_option: ["Ua", "Ub", "Uc", "Ia", "Ib", "Ic"],
   token: "",
-  subject: "",
-  question: "",
-});
-
-const customElementsForm = reactive({
-  checkbox: ["Ua", "Ub", "Uc", "Ia", "Ib", "Ic"],
+  notes: "",
 });
 
 const submit = () => {
-  //
+  try {
+    addUser({
+      ...form,
+      alert_option: form.alert_option.join(","),
+    });
+    formStatusSubmit();
+  } catch (error) {
+    console.error(error);
+    formStatusCurrent.value = 2;
+  }
 };
 
 const formStatusCurrent = ref(0);
@@ -44,14 +50,14 @@ const formStatusSubmit = () => {
     <section-main>
       <section-title-line-with-button
         :icon="mdiBallotOutline"
-        title="添加用户"
+        title="添加预警"
         main
       >
       </section-title-line-with-button>
-      <card-box form @submit.prevent="submit">
+      <card-box form >
         <FormField label="用户信息">
           <form-control
-            v-model="form.name"
+            v-model="form.username"
             :icon="mdiAccount"
             placeholder="输入用户名"
           />
@@ -73,7 +79,7 @@ const formStatusSubmit = () => {
 
         <form-field label="预警选项">
           <form-check-radio-group
-            v-model="customElementsForm.checkbox"
+            v-model="form.alert_option"
             name="sample-checkbox"
             :options="{
               Ua: 'Ua',
@@ -88,19 +94,19 @@ const formStatusSubmit = () => {
 
         <form-field label="推送密钥" help="推送加：https://www.pushplus.plus">
           <form-control
-            v-model="form.phone"
+            v-model="form.token"
             type="tel"
             placeholder="输入 token"
           />
         </form-field>
 
         <form-field label="备注" help="最多255个字符">
-          <form-control type="textarea" placeholder="输入备注" />
+          <form-control v-model="form.notes" type="textarea" placeholder="输入备注" />
         </form-field>
 
         <template #footer>
           <base-buttons>
-            <base-button type="submit" color="info" label="Submit" />
+            <base-button type="submit" color="info" label="Submit" @click="submit"/>
             <base-button type="reset" color="info" outline label="Reset" />
           </base-buttons>
         </template>

@@ -1,46 +1,67 @@
 <script setup>
-import { computed, ref } from "vue";
-import { useMainStore } from "@/stores/main";
-import {mdiAccount, mdiMail, mdiPencil, mdiTrashCan} from "@mdi/js";
+import {computed, onBeforeMount, ref} from "vue";
+import { mdiAccount, mdiMail, mdiPencil, mdiTrashCan } from "@mdi/js";
 import CardBoxModal from "@/components/Card/CardBoxModal.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/Baselevel.vue";
 import FormField from "@/components/Forms/FormField.vue";
-import FormCheckRadioGroup from "@/components/Forms/FormCheckRadioGroup.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/Card/CardBox.vue";
+import { fetchAllUsers, deleteUser, updateUser } from "@/api/user.js";
 
 defineProps({
   checkable: Boolean,
 });
 
-const mainStore = useMainStore();
-
-const items = computed(() => mainStore.clients);
+// 从API获取用户数据，并分页
+const items = ref([]);
+// 每页显示的用户数
+const perPage = ref(10);
+// 当前页
+const currentPage = ref(0);
+// 选中的行
+const checkedRows = ref([]);
+const itemsPaginated = computed(() =>
+  items.value.slice(
+    perPage.value * currentPage.value,
+    perPage.value * (currentPage.value + 1)
+  )
+);
+const numPages = computed(() => Math.ceil(items.value.length / perPage.value));
+const currentPageHuman = computed(() => currentPage.value + 1);
+const pagesList = computed(() => {
+  const pagesList = [];
+  for (let i = 0; i < numPages.value; i++) {
+    pagesList.push(i);
+  }
+  return pagesList;
+});
+// 保存修改
+const saveChanges = async () => {
+  await updateUser(editingClient.value.id, editingClient.value);
+  items.value = items.value.map((client) => {
+    if (client.id === editingClient.value.id) {
+      return { ...editingClient.value };
+    }
+    return client;
+  });
+  isEditModalActive.value = false;
+};
 
 // 显示编辑模态框
 const isEditModalActive = ref(false);
 const editingClient = ref({
   id: "",
-  name: "",
-  company: "",
-  city: "",
-  created: "",
+  username: "",
+  email: "",
+  phone: "",
+  token: "",
 });
 const showEditModal = (client) => {
   editingClient.value = { ...client }; // 创建当前编辑的客户的副本
   isEditModalActive.value = true;
-};
-const saveChanges = () => {
-  const index = mainStore.clients.findIndex(
-    (c) => c.id === editingClient.value.id
-  );
-  if (index !== -1) {
-    mainStore.clients[index] = editingClient.value;
-  }
-  isEditModalActive.value = false;
 };
 
 // 显示删除模态框
@@ -52,10 +73,10 @@ const showDeleteModal = (client) => {
 };
 const confirmDeletion = () => {
   if (candidateForDeletion.value) {
-    mainStore.clients = mainStore.clients.filter(
+    deleteUser(candidateForDeletion.value);
+    items.value = items.value.filter(
       (client) => client.id !== candidateForDeletion.value
     );
-    candidateForDeletion.value = null;
   }
   isDeleteModalActive.value = false; // 关闭模态框
 };
@@ -63,37 +84,8 @@ const cancelDeletion = () => {
   candidateForDeletion.value = null;
   isDeleteModalActive.value = false;
 };
-
-const perPage = ref(10);
-
-const currentPage = ref(0);
-
-const checkedRows = ref([]);
-
-const itemsPaginated = computed(() =>
-  items.value.slice(
-    perPage.value * currentPage.value,
-    perPage.value * (currentPage.value + 1)
-  )
-);
-
-const numPages = computed(() => Math.ceil(items.value.length / perPage.value));
-
-const currentPageHuman = computed(() => currentPage.value + 1);
-
-const pagesList = computed(() => {
-  const pagesList = [];
-
-  for (let i = 0; i < numPages.value; i++) {
-    pagesList.push(i);
-  }
-
-  return pagesList;
-});
-
 const remove = (arr, cb) => {
   const newArr = [];
-
   arr.forEach((item) => {
     if (!cb(item)) {
       newArr.push(item);
@@ -102,7 +94,6 @@ const remove = (arr, cb) => {
 
   return newArr;
 };
-
 const checked = (isChecked, client) => {
   if (isChecked) {
     checkedRows.value.push(client);
@@ -113,6 +104,10 @@ const checked = (isChecked, client) => {
     );
   }
 };
+
+onBeforeMount(async () => {
+  items.value = await fetchAllUsers();
+});
 </script>
 
 <template>
@@ -120,41 +115,41 @@ const checked = (isChecked, client) => {
     v-model="isEditModalActive"
     title="编辑用户信息"
     button="primary"
-    buttonLabel="Save Changes"
+    buttonLabel="保存修改"
     has-cancel
     @confirm="saveChanges"
     @cancel="() => (isEditModalActive = false)"
     class="w-full h-full"
   >
-<card-box>
-        <FormField label="用户信息">
-          <form-control
-            v-model="editingClient.name"
-            :icon="mdiAccount"
-            placeholder="输入用户名"
-          />
-          <form-control
-            v-model="editingClient.email"
-            type="email"
-            :icon="mdiMail"
-            placeholder="输入邮箱"
-          />
-        </FormField>
-        <form-field label="电话" help="Do not enter the leading zero">
-          <form-control
-            v-model="editingClient.city"
-            type="tel"
-            placeholder="输入电话号码"
-          />
-        </form-field>
-        <form-field label="推送密钥" help="推送加：https://www.pushplus.plus">
-          <form-control
-            v-model="editingClient.created"
-            type="tel"
-            placeholder="输入 token"
-          />
-        </form-field>
-      </card-box>
+    <card-box>
+      <FormField label="用户信息">
+        <form-control
+          v-model="editingClient.username"
+          :icon="mdiAccount"
+          placeholder="输入用户名"
+        />
+        <form-control
+          v-model="editingClient.email"
+          type="email"
+          :icon="mdiMail"
+          placeholder="输入邮箱"
+        />
+      </FormField>
+      <form-field label="电话" help="Do not enter the leading zero">
+        <form-control
+          v-model="editingClient.phone"
+          type="tel"
+          placeholder="输入电话号码"
+        />
+      </form-field>
+      <form-field label="推送密钥" help="推送加：https://www.pushplus.plus">
+        <form-control
+          v-model="editingClient.token"
+          type="tel"
+          placeholder="输入 token"
+        />
+      </form-field>
+    </card-box>
   </card-box-modal>
 
   <card-box-modal
@@ -188,24 +183,24 @@ const checked = (isChecked, client) => {
         />
         <td class="border-b-0 lg:w-6 before:hidden">
           <user-avatar
-            :username="client.name"
+            :username="client.username"
             class="w-24 h-24 mx-auto lg:w-6 lg:h-6"
           />
         </td>
-        <td data-label="Name">
-          {{ client.name }}
+        <td data-label="Username">
+          {{ client.username }}
         </td>
-        <td data-label="Company">
-          {{ client.company }}
+        <td data-label="Email">
+          {{ client.email }}
         </td>
-        <td data-label="City">
-          {{ client.city }}
+        <td data-label="Phone">
+          {{ client.phone }}
         </td>
         <td data-label="Created" class="lg:w-1 whitespace-nowrap">
           <small
             class="text-gray-500 dark:text-slate-400"
-            :title="client.created"
-            >{{ client.created }}</small
+            :title="client.created_at"
+            >{{ client.created_at }}</small
           >
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">

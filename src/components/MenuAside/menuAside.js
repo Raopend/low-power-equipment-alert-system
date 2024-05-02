@@ -2,7 +2,7 @@ import {
   mdiMonitor,
   mdiCarBrakeAlert,
   mdiViewList,
-  mdiPencilPlus,
+  mdiChartArc,
 } from "@mdi/js";
 
 export default [
@@ -21,4 +21,9 @@ export default [
     icon: mdiViewList,
     label: "用户管理",
   },
+  {
+    to: "/Prediction",
+    icon: mdiChartArc,
+    label: "参数预测",
+  }
 ];

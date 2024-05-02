@@ -49,7 +49,6 @@ const formStatusSubmit = () => {
   <default-layout>
     <section-main>
       <section-title-line-with-button
-        :icon="mdiBallotOutline"
         title="添加预警"
         main
       >

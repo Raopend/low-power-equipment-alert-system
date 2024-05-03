@@ -15,6 +15,8 @@ const chartData = ref({});
 const fetchData = async () => {
   try {
     const response = await axiosInstance.get("/predict");
+    let sequence = response.data.sequence;
+    let predicted = response.data.predicted;
     chartData.value = response.data;
     chartData.value = {
       // labels 设置为元素个数
@@ -23,13 +25,13 @@ const fetchData = async () => {
         datasetObject(
           "primary",
           "Ia",
-          response.data.sequence
+          sequence
         ),
-        // datasetObject(
-        //   "info",
-        //   "Ib",
-        //   response.data.map((item) => item.Ib)
-        // ),
+        datasetObject(
+          "info",
+          "predict",
+            [NaN, NaN, NaN, NaN, sequence[sequence.length - 1], predicted]
+        ),
         // datasetObject(
         //   "danger",
         //   "Ic",
@@ -37,7 +39,6 @@ const fetchData = async () => {
         // ),
       ],
     };
-    console.log(chartData.value);
   } catch (error) {
     console.error(error);
   }

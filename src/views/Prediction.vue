@@ -15,22 +15,22 @@ const chartData = ref({});
 const fetchData = async () => {
   try {
     const response = await axiosInstance.get("/predict");
-    let sequence = response.data.sequence;
+    let Ia = response.data.Ia;
+    let Ib = response.data.Ib;
+    let Ic = response.data.Ic;
     let predicted = response.data.predicted;
+    let predict_data = new Array(11).fill(NaN);
+    predict_data.push(Ia[Ia.length - 1]);
+    predict_data.push(predicted);
     chartData.value = response.data;
     chartData.value = {
       // labels 设置为元素个数
       labels: response.data.collection_time,
       datasets: [
-        datasetObject("primary", "Ia", sequence),
-        datasetObject("info", "predict", [
-          NaN,
-          NaN,
-          NaN,
-          NaN,
-          sequence[sequence.length - 1],
-          predicted,
-        ]),
+        datasetObject("primary", "Ia", Ia),
+        datasetObject("danger", "Ib", Ib),
+        datasetObject("info", "Ic", Ic),
+        datasetObject("success", "predict", predict_data),
       ],
     };
   } catch (error) {

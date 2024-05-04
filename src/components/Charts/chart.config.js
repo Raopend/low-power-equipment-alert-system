@@ -3,6 +3,7 @@ export const chartColors = {
     primary: "#00D1B2",
     info: "#209CEE",
     danger: "#FF3860",
+    success: "#191970",
   },
 };
 

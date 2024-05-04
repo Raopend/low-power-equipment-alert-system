@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onBeforeMount, ref} from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import { mdiAccount, mdiMail, mdiPencil, mdiTrashCan } from "@mdi/js";
 import CardBoxModal from "@/components/Card/CardBoxModal.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";

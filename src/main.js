@@ -4,12 +4,14 @@ import "./css/main.css";
 import router from "./routers";
 import { createPinia } from "pinia";
 import { useMainStore } from "@/stores/main.js";
+import Notifications from "@kyvg/vue3-notification";
 
 const pinia = createPinia();
 const app = createApp(App);
 
 app.use(pinia);
 app.use(router);
+app.use(Notifications);
 app.mount("#app");
 
 const mainStore = useMainStore(pinia);

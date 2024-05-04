@@ -25,5 +25,5 @@ export default [
     to: "/Prediction",
     icon: mdiChartArc,
     label: "参数预测",
-  }
+  },
 ];

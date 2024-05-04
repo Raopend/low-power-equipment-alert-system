@@ -10,11 +10,12 @@ import { onMounted, ref } from "vue";
 import axiosInstance from "@/api/axiosInstance.js";
 import { datasetObject } from "@/components/Charts/chart.config.js";
 
-const chartData = ref({});
+const chartIData = ref({});
+const chartUData = ref({});
 
-const fetchData = async () => {
+const fetchIData = async () => {
   try {
-    const response = await axiosInstance.get("/predict");
+    const response = await axiosInstance.get("/predict_I");
     let Ia = response.data.Ia;
     let Ib = response.data.Ib;
     let Ic = response.data.Ic;
@@ -22,8 +23,8 @@ const fetchData = async () => {
     let predict_data = new Array(11).fill(NaN);
     predict_data.push(Ia[Ia.length - 1]);
     predict_data.push(predicted);
-    chartData.value = response.data;
-    chartData.value = {
+    chartIData.value = response.data;
+    chartIData.value = {
       // labels 设置为元素个数
       labels: response.data.collection_time,
       datasets: [
@@ -38,13 +39,41 @@ const fetchData = async () => {
   }
 };
 
+const fetchUData = async () => {
+  try {
+    const response = await axiosInstance.get("/predict_U");
+    let Ua = response.data.Ua;
+    let Ub = response.data.Ub;
+    let Uc = response.data.Uc;
+    let predicted = response.data.predicted;
+    let predict_data = new Array(11).fill(NaN);
+    predict_data.push(Ua[Ua.length - 1]);
+    predict_data.push(predicted);
+    chartUData.value = response.data;
+    chartUData.value = {
+      // labels 设置为元素个数
+      labels: response.data.collection_time,
+      datasets: [
+        datasetObject("primary", "Ua", Ua),
+        datasetObject("danger", "Ub", Ub),
+        datasetObject("info", "Uc", Uc),
+        datasetObject("success", "predict", predict_data),
+      ],
+    };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // 轮询查询
 setInterval(() => {
-  fetchData();
-}, 5000);
+  fetchIData();
+  fetchUData();
+}, 900000);
 
 onMounted(() => {
-  fetchData();
+  fetchIData();
+  fetchUData();
 });
 </script>
 
@@ -56,7 +85,7 @@ onMounted(() => {
       </section-title-line-with-button>
       <CardBox class="mb-6 mt-4">
         <div>
-          <line-chart :data="chartData" class="h-96" />
+          <line-chart :data="chartIData" class="h-96" />
         </div>
       </CardBox>
 
@@ -68,7 +97,7 @@ onMounted(() => {
       </section-title-line-with-button>
       <CardBox class="mb-6 mt-4">
         <div>
-          <line-chart :data="chartData" class="h-96" />
+          <line-chart :data="chartUData" class="h-96" />
         </div>
       </CardBox>
     </section-main>

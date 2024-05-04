@@ -9,10 +9,7 @@ const year = new Date().getFullYear();
   <footer class="py-2 px-6" :class="containerMaxW">
     <base-level>
       <div class="text-center md:text-left">
-        <b
-          >&copy;{{ year }},
-          <a href="https://justboil.me/" target="_blank">JustBoil.me</a>.</b
-        >
+        <b>&copy;{{ year }}, <a target="_blank">常州大学毕业设计</a>.</b>
         <slot />
       </div>
     </base-level>

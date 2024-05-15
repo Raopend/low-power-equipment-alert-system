@@ -23,6 +23,11 @@ const fetchIData = async () => {
     let predict_data = new Array(11).fill(NaN);
     predict_data.push(Ia[Ia.length - 1]);
     predict_data.push(predicted);
+
+    // 计算 Ia 平均值 + 10%
+    let Ia_avg = Ia.reduce((a, b) => a + b, 0) / Ia.length;
+    // 组成新数组
+    Ia_avg = new Array(13).fill(Ia_avg * 1.1);
     chartIData.value = response.data;
     chartIData.value = {
       // labels 设置为元素个数
@@ -32,6 +37,15 @@ const fetchIData = async () => {
         datasetObject("danger", "Ib", Ib),
         datasetObject("info", "Ic", Ic),
         datasetObject("success", "predict", predict_data),
+        {
+          label: "I_avg",
+          data: Ia_avg,
+          borderColor: "#ff00ff",
+          fill: false,
+          borderWidth: 5,
+          pointRadius: 0,
+          borderDash: [5, 5],
+        },
       ],
     };
   } catch (error) {
@@ -49,6 +63,11 @@ const fetchUData = async () => {
     let predict_data = new Array(11).fill(NaN);
     predict_data.push(Ua[Ua.length - 1]);
     predict_data.push(predicted);
+
+    // 计算 Ua 平均值 + 10%
+    let Ua_avg = Ua.reduce((a, b) => a + b, 0) / Ua.length;
+    // 组成新数组
+    Ua_avg = new Array(13).fill(Ua_avg * 1.1);
     chartUData.value = response.data;
     chartUData.value = {
       // labels 设置为元素个数
@@ -58,6 +77,15 @@ const fetchUData = async () => {
         datasetObject("danger", "Ub", Ub),
         datasetObject("info", "Uc", Uc),
         datasetObject("success", "predict", predict_data),
+        {
+          label: "U_avg",
+          data: Ua_avg,
+          borderColor: "#ff00ff",
+          fill: false,
+          borderWidth: 5,
+          pointRadius: 0,
+          borderDash: [5, 5],
+        },
       ],
     };
   } catch (error) {
@@ -69,7 +97,7 @@ const fetchUData = async () => {
 setInterval(() => {
   fetchIData();
   fetchUData();
-}, 900000);
+}, 10000);
 
 onMounted(() => {
   fetchIData();

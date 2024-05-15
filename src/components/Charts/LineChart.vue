@@ -45,10 +45,9 @@ onMounted(() => {
       scales: {
         x: {
           display: true,
-          // type: 'timeseries'
         },
         y: {
-          display: false,
+          display: true,
         },
       },
     },

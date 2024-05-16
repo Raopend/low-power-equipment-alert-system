@@ -1,13 +1,7 @@
 <script setup>
-import { use } from "echarts/core";
-import { PieChart, BarChart, LineChart } from "echarts/charts";
-import {
-  PolarComponent,
-  TitleComponent,
-  LegendComponent,
-  TooltipComponent,
-    GridComponent,
-} from "echarts/components";
+import {use} from "echarts/core";
+import {BarChart, LineChart, PieChart} from "echarts/charts";
+import {GridComponent, LegendComponent, PolarComponent, TitleComponent, TooltipComponent,} from "echarts/components";
 import SectionTitleLineWithButton from "@/components/Base/SectionTitleLineWithButton.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import CardBox from "@/components/Card/CardBox.vue";
@@ -16,7 +10,8 @@ import SectionMain from "@/components/Base/SectionMain.vue";
 import {mdiFlashTriangleOutline, mdiSineWave} from "@mdi/js";
 import VChart from "vue-echarts";
 import {CanvasRenderer} from "echarts/renderers";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import axiosInstance from "@/api/axiosInstance.js";
 
 use([
   PieChart,
@@ -36,6 +31,17 @@ let XData = [];
 let xdataIndex = 0; // 用于追踪当前添加到图表中的数据点索引
 let ydataIndex = 0; // 用于追踪当前添加到图表中的数据点索引
 let maxPoints = 50; // 图表上最大显示的数据点数
+
+onMounted(() => {
+  try {
+    axiosInstance.get("/check_U").then((response) => {
+      temperatureData = response.data;
+    });
+  } catch (error) {
+    console.error(error);
+  }
+  setInterval(addData, 1000);
+});
 
 function addData() {
   if (ydataIndex < temperatureData.length) {
@@ -98,6 +104,8 @@ const option = ref({
     }
   )),
 });
+
+
 </script>
 
 <template>

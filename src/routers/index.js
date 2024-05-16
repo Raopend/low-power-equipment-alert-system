@@ -35,6 +35,11 @@ const router = createRouter({
       name: "Prediction",
       component: () => import("@/views/Prediction.vue"),
     },
+    {
+      path: "/Check",
+      name: "Check",
+      component: () => import("@/views/Check.vue"),
+    }
   ],
   scrollBehavior(to, from, savedPosition) {
     return savedPosition || { top: 0 };

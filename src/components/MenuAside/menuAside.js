@@ -26,4 +26,9 @@ export default [
     icon: mdiChartArc,
     label: "参数预测",
   },
+  {
+    to: "/Check",
+    icon: mdiChartArc,
+    label: "Check",
+  },
 ];
